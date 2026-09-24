@@ -3,7 +3,7 @@
 
 EVOSUITE_JAR="evosuite-1.0.6.jar"
 EVOSUITE_URL="https://github.com/EvoSuite/evosuite/releases/download/v1.0.6/evosuite-1.0.6.jar"
-TARGET_CLASS="ar.edu.unrc.game2048.Cell"
+TARGET_CLASS="ar.edu.unrc.game2048.Board"
 SEARCH_BUDGET=60
 
 # Download EvoSuite if not exists
