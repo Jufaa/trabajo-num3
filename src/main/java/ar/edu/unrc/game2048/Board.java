@@ -48,6 +48,9 @@ public class Board {
         this(DEFAULT_SIZE);
     }
 
+
+    private Random rng = new Random(67);
+    
     /**
      * Creates a new board of the specified size with two random tiles.
      *
@@ -217,7 +220,7 @@ public class Board {
             for (int c = 0; c < size; c++) {
                 Cell current = grid[r][c];
                 // Check right neighbor
-                if (c + 1 < size - 1 && current.canMergeWith(grid[r][c + 1])) {
+                if (c + 1 < size && current.canMergeWith(grid[r][c + 1])) {
                     return false;
                 }
                 // Check down neighbor
@@ -310,7 +313,7 @@ public class Board {
         for (int col = 0; col < size; col++) {
             // Create a list of cells from bottom to top (reverse order)
             List<Cell> column = new ArrayList<>();
-            for (int row = size - 1; row > 0; row--) {
+            for (int row = size - 1; row >= 0; row--) {
                 column.add(grid[row][col]);
             }
 
@@ -486,13 +489,13 @@ public class Board {
         if (empty.isEmpty()) {
             return false;
         }
-
+        
         // Choose random position
-        int randomIndex = (int) (Math.random() * empty.size());
+        int randomIndex = rng.nextInt(empty.size());
         Position pos = empty.stream().skip(randomIndex).findFirst().get();
-
+        
         // 90% chance of 2, 10% chance of 4 (standard 2048 rules)
-        int value = Math.random() < 0.9 ? 2 : 4;
+        int value = rng.nextDouble() < 0.9 ? 2: 4;
         grid[pos.row][pos.col] = new Cell(value);
 
         return true;
@@ -549,6 +552,17 @@ public class Board {
         }
         sb.append("\n");
         return sb.toString();
+    }
+
+    public boolean repOK() {
+        if (size <= 0 || grid == null || grid.length != size) return false;
+        for (int r = 0; r < size; r++) {
+            if (grid[r] == null || grid[r].length != size) return false;
+            for (int c = 0; c < size; c++) {
+                if (grid[r][c] == null || !grid[r][c].repOK()) return false;
+            }
+        }
+        return score >= 0;
     }
 
     // ==================== INNER CLASSES ====================
