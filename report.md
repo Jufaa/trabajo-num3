@@ -36,7 +36,7 @@ Observaciones:
 | Tamaño de la suite | 514 tests | 70 tests (minimizados) |
 | Tiempo de ejecución | Lento (`RegressionTestBoard` ~21–25 s) | Rápido (~1 s) |
 | Entradas típicas | Secuencias de operaciones válidas | Valores límite e inválidos: negativos, `null`, tamaños extremos, coordenadas fuera de rango |
-| Manejo de excepciones | _completar tras revisar los tests de Randoop_ | Verifica excepciones y mensajes (`"Cell value cannot be negative"`, etc.) |
+| Manejo de excepciones | Registra las excepciones como comportamiento esperado (`try/catch` con `fail`), pero no verifica el mensaje en el `catch` | Verifica excepciones y mensajes (`"Cell value cannot be negative"`, etc.) |
 | Integración | Sin runner especial | Requiere `EvoRunner` y scaffolding; interfiere con JaCoCo por su classloader |
 
 **Fortalezas y debilidades**
