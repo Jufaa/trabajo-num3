@@ -63,6 +63,8 @@ public class MainCLI {
             } else {
                 System.out.println("No tiles moved. Try a different direction.");
             }
+
+            assert board.repOK() == true : "Error detected with MainCLI assertion";
             
             System.out.println();
         }
