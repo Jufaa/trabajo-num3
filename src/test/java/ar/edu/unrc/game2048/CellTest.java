@@ -44,7 +44,6 @@ public class CellTest {
         assertEquals(0, Cell.EMPTY.getValue());
     }
 
-
     @Test
     public void testCanMergeWith() {
         assertTrue(new Cell(4).canMergeWith(new Cell(4)));
