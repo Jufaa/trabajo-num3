@@ -98,3 +98,8 @@ java -cp "lib/daikon.jar:target/classes:target/test-classes:$(mvn dependency:bui
     ar.edu.unrc.game2048.DaikonTestRunner
 ```
 
+Finalmente corremos Daikon en las trazas y guardamos el output:
+
+```bash
+java -cp lib/daikon.jar daikon.Daikon daikon-traces/*.dtrace > daikon-output.txt
+```
