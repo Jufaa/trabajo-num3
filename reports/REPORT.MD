@@ -67,5 +67,34 @@ A pesar de no haber encontrado errores, vemos la utilidad que nos trae el fuzzer
 Cada una de las técnicas utilizadas durante el trayecto del trabajo tienen un lugar y un propósito más que útil a la hora de testear, y seriamos necios de no aprovecharlas a la hora de desarrollar una suite. Pero, de manera contradictoria a como empezamos este trabajo, buscando una forma de ahorrarnos el tiempo y tedio que conllevan los tests manuales, llegamos a la conclusión de que es la forma de obtener los mejores tests. Comparado a las técnicas automáticas, un humano es capaz de crear tests muy legibles, con fases distinguibles, aserciones y oráculos fuertes y seguros. 
 A pesar de esto, las herramientas automáticas nos permiten crear tests que simplemente no se nos ocurrirían, pero que son estados posibles del programa o casos extremos que tenemos que poder detectar. Dentro de estas técnicas, la que mejor resultado tuvo fue EvoSuite, con una cantidad de tests compacta y metricas muy favorables de puntuación.
 
+## Daikon
 
+Al utilizar para los tests JUnit5, tuvimos que hacer un nuevo "main falso", ya que Chicory no puede ejecutarlos directamente. DaikonTestRunner.java nos permite esto, además tuvimos que alterar los comandos para tenerlo en cuenta.
+
+## Comandos utilizados:
+
+Ejecutamos Chicory en los tests existentes
+
+```bash
+java -cp "lib/daikon.jar:target/classes:target/test-classes:$(mvn dependency:build-classpath -q -DincludeScope=test -DforceStdout)" \
+    daikon.Chicory \
+    --output-dir=daikon-traces \
+    ar.edu.unrc.game2048.DaikonTestRunner
+```
+
+Conseguimos nuevas trazas con juegos manuales:
+
+```bash
+java -cp "lib/daikon.jar:target/classes"      daikon.Chicory      --output-dir=daikon-traces      ar.edu.unrc.game2048.MainCLI
+```
+
+Limitamos la intrumentalización a las clases relevantes:
+
+```bash
+java -cp "lib/daikon.jar:target/classes:target/test-classes:$(mvn dependency:build-classpath -q -DincludeScope=test -DforceStdout)" \
+    daikon.Chicory \
+    --ppt-select-pattern="ar.edu.unrc.game2048.Board|ar.edu.unrc.game2048.Cell" \
+    --output-dir=daikon-traces \
+    ar.edu.unrc.game2048.DaikonTestRunner
+```
 
