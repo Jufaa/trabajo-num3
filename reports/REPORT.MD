@@ -103,3 +103,43 @@ Finalmente corremos Daikon en las trazas y guardamos el output:
 ```bash
 java -cp lib/daikon.jar daikon.Daikon daikon-traces/*.dtrace > daikon-output.txt
 ```
+
+## Analisis de invariantes
+
+Clase Cell:
+
+
+- (this.value >= Cell.EMPTY.value): Correcta y útil, es parte de nuestro repOK(), y sería un problema que una celda tenga un valor negativo.
+
+- (Cell.EMPTY != null and Cell.EMPTY.value == 0): Correcta pero trivial, ya que seria un problema que la condición falle, pero es algo garantizado por como esta inicilizada y definida la constante.
+
+- (this.value == orig(value)): Del constructor. Correcta y útil, ya que demuestra que el constructor no debe alterar de ninguna forma el valor con el que es invocado.
+
+- (this.value one of {2, 4, 8}): Incorrecta, obviamente los valores de una celda son más que estos 3.
+
+- (return.value one of {4, 8} en mergeWith()): De nuevo, obviamente podemos combinar celdas con valores mayores a 2 o 4.
+
+- (this.value is a power of 2): Correcta y útil, es parte del diseño del juego y vital para que funcione correctamente.
+
+Clase Board:
+
+- (this.grid != null): Correcta y útil, parte de nuestro repOK()
+
+- (this.grid.getClass().getName() == Cell[][].class): Correcta pero trivial, verifica que la matriz este conformada por celdas, pero esto esta garantizado por la definición de tipos de la clase.
+
+- (this.rng != null): Correcta y útil, además de que no lo habiamos tenido en cuenta ya que fue algo añadido posterior a la implementación del repOK(). 
+
+- (this.score one of {0, 4}): Incorrecta, obviamente el valor de puntaje puede ser distinto a ese conjunto.
+
+- (Board.DEFAULT_SIZE >= this.score, this.size >= this.score, and Board.WINNING_VALUE > this.score): Incorrecta, probablemente inferida debido a que las trazas tenian muchos valores bajos en las celdas.
+
+- (this.size == size(this.grid[])) Correcta y útil, ya que el tamaño declarado como atributo y el tamaño de la matriz deben ser equivalentes. Nuestro repOK() verifica todas las filas.
+
+## Comparación con repOK()
+
+Como podemos observar, Daikon puede ser muy preciso y encontrar invariantes que ya formaban parte de nuestro repOK(), e incluso descubrir nuevas que no se tomaron en cuenta. Pero también puede inferir condiciones que no son propian de la estructura del objeto en si, sino el funcionamiento de métodos en específico, o en el peor de los casos, invariantes completamente incorrectas. Es importante analizar detenidamente antes de modificar o implementar un repOK utilizando esta herramienta, pero puede ser util.
+
+## Conclusion oráculos
+
+Para este programa, luego de haber experimentado con las herramientas Randoop, EvoSuite y Daikon, concluímos que los oráculos más utiles fueron las aserciones manuales de test y la invariante de representación. Aunque tomen tiempo y sufran del factor humano, siempre fueron las más robustas.
+Esto no demerita a las aserciones de las herramientas, ya que al ser automáticas tienen un valor muy grande, además de que se nutren de las aserciones manuales en varios casos. Creemos que la utilización de las herramientas de generación automáticas, las invariantes inferidas por Daikon y el trabajo manual en conjunto es lo que más potencial tiene.
